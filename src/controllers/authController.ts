@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { IUserRepository } from '../application/contracts/IUserRepository';
 import { IAuthService } from '../application/contracts/IAuthService';
 import { AuthUseCase } from '../application/useCases/authUseCase';
+require('express-async-errors');
 
 export function authController(
   userRepository: IUserRepository,

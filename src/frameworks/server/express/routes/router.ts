@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import { Router } from 'express';
 import { AuthRouter } from './authRouter';
 import { UserRepository } from '@app/src/frameworks/database/mongoDB/repositorires/userRepository';

@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import { IAuthService } from '@app/src/application/contracts/IAuthService';
 import { IUserRepository } from '@app/src/application/contracts/IUserRepository';
 import { authController } from '@app/src/controllers/authController';
