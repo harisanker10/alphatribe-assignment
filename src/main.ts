@@ -15,3 +15,6 @@ const bootstrap = async () => {
 };
 bootstrap();
 export { bootstrap };
+
+//TODO: - Image parsing using multer for users
+//TODO: - Api documentation

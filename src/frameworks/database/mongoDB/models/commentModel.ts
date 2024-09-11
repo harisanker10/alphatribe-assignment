@@ -3,7 +3,9 @@ import { Schema, model } from 'mongoose';
 interface Comment {
   postId: Schema.Types.ObjectId;
   userId: Schema.Types.ObjectId;
-  content: string;
+  createdAt: string;
+  updatedAt: string;
+  comment: string;
 }
 
 const commentSchema = new Schema(
@@ -16,12 +18,22 @@ const commentSchema = new Schema(
       type: Schema.Types.ObjectId,
       required: true,
     },
-    content: {
+    comment: {
       type: String,
       required: true,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toObject: {
+      virtuals: false,
+      versionKey: false,
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+      },
+    },
+  },
 );
 
-export const postModel = model<Comment>('User', commentSchema);
+export const commentModel = model<Comment>('Comment', commentSchema);

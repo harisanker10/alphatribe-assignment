@@ -16,7 +16,17 @@ const likeSchema = new Schema(
       required: true,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toObject: {
+      virtuals: false,
+      versionKey: false,
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+      },
+    },
+  },
 );
 
-export const postModel = model<Like>('User', likeSchema);
+export const likeModel = model<Like>('Like', likeSchema);

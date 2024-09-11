@@ -6,15 +6,16 @@ export function protectRoute(req: Request, res: Response, next: NextFunction) {
   const authHeader = (req.headers['Authorization'] ||
     req.headers['authorization']) as string | undefined;
   if (!authHeader) {
-    res.status(403).json('Not authorized');
+    res.status(403).json({ success: false, message: 'Not authorized' });
     return;
   }
   const token = authHeader?.split(' ')[1];
   if (!token) {
-    res.status(403).json('Not authorized');
+    res.status(403).json({ success: false, message: 'Not authorized' });
     return;
   }
   const authService = new AuthService();
+  console.log({ token });
   const payload = authService.verifyToken(token);
   req['user'] = payload as UserPayload;
   next();
