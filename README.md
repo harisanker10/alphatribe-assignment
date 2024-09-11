@@ -4,35 +4,54 @@ A simple nodejs web server using express. The project uses clean architecture co
 
 ## Run Locally
 
-Clone the project
+- Easiest way to try Locally is through docker compose.
 
-```bash
+  Clone the project
+
+  ```bash
   git clone https://github.com/harisanker10/alphatribe-assignment
-```
+  ```
 
-Go to the project directory
+  Go to the project directory
 
-```bash
-  cd my-project
-```
+  ```bash
+    cd alphatribe-assignment
+    docker compose up -d
+  ```
 
-Install dependencies
+- Or install locally
 
-```bash
-  npm install
-```
+  Make sure you have MongoDB running.
 
-Create .env file and populate all the fields
+  Clone the project
 
-```bash
-  mv .env.example .env
-```
+  ```bash
+    git clone https://github.com/harisanker10/alphatribe-assignment
+  ```
 
-Start the server
+  Go to the project directory
 
-```bash
-  npm run start
-```
+  ```bash
+    cd alphatribe-assignment
+  ```
+
+  Install dependencies
+
+  ```bash
+    npm install
+  ```
+
+  Create .env file and populate all the fields
+
+  ```bash
+    mv .env.example .env
+  ```
+
+  Start the server
+
+  ```bash
+    npm run start
+  ```
 
 ## Overview
 
@@ -70,4 +89,3 @@ Adherence to these practices fosters maintainability and flexibility in the long
 
 - E2E Testing with Jest and Supertest
 - Clean architecure
-- Fully typesafe using typescript

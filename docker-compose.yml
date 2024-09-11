@@ -1,0 +1,33 @@
+networks:
+  my-net:
+
+services:
+  app:
+    image: node:alpine
+    container_name: node-app
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/post-clean-code
+    networks:
+      - my-net
+    depends_on:
+      - mongo
+    command: sh -c "npm install && npm run dev"
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - '27017:27017'
+    networks:
+      - my-net
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
