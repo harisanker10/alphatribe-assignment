@@ -5,14 +5,24 @@ import { protectRoute } from '../middlewares/authMiddleware';
 import { CommentController } from '@app/src/controllers/commentController';
 import { ICommentRepository } from '@app/src/application/contracts/ICommentRepository';
 import { ILikeRepository } from '@app/src/application/contracts/ILikeRepository';
+import { INotificationService } from '@app/src/application/contracts/services/INotificationService';
 
 export function PostRouter(
   postRepository: IPostRepository,
   commentRepository: ICommentRepository,
   likeRepository: ILikeRepository,
+  notificationService: INotificationService,
 ) {
-  const postController = PostController(postRepository, likeRepository);
-  const commentsController = CommentController(commentRepository);
+  const postController = PostController(
+    postRepository,
+    likeRepository,
+    notificationService,
+  );
+  const commentsController = CommentController(
+    commentRepository,
+    notificationService,
+    postRepository,
+  );
   const router = Router();
   router.route('/').post(protectRoute, postController.createPost);
   router.route('/').get(postController.getAllPosts);

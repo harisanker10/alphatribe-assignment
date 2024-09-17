@@ -1,9 +1,19 @@
 import { Request, Response } from 'express';
 import { ICommentRepository } from '../application/contracts/ICommentRepository';
 import { CommentUseCase } from '../application/useCases/commentUseCase';
+import { INotificationService } from '../application/contracts/services/INotificationService';
+import { IPostRepository } from '../application/contracts/IPostRepository';
 
-export function CommentController(commentRepository: ICommentRepository) {
-  const commentUseCase = CommentUseCase(commentRepository);
+export function CommentController(
+  commentRepository: ICommentRepository,
+  notificationService: INotificationService,
+  postRepository: IPostRepository,
+) {
+  const commentUseCase = CommentUseCase(
+    commentRepository,
+    postRepository,
+    notificationService,
+  );
   return {
     async createComment(req: Request, res: Response) {
       const postId = req.params.postId;

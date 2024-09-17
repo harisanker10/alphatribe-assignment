@@ -2,12 +2,18 @@ import { Request, Response } from 'express';
 import { IPostRepository } from '../application/contracts/IPostRepository';
 import { PostUseCase } from '../application/useCases/postUseCase';
 import { ILikeRepository } from '../application/contracts/ILikeRepository';
+import { INotificationService } from '../application/contracts/services/INotificationService';
 
 export function PostController(
   postRepository: IPostRepository,
   likeRepository: ILikeRepository,
+  notificationService: INotificationService,
 ) {
-  const postUseCase = PostUseCase(postRepository, likeRepository);
+  const postUseCase = PostUseCase(
+    postRepository,
+    likeRepository,
+    notificationService,
+  );
 
   return {
     async getPost(req: Request, res: Response) {

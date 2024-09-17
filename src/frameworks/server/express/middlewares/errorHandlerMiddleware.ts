@@ -8,7 +8,7 @@ export function errorHandler(
   res: Response,
   next: NextFunction,
 ) {
-  console.log({ err });
+  console.log('[ErrorHandler]:', err.message);
   if (err instanceof UseCaseError) {
     res
       //@ts-ignore

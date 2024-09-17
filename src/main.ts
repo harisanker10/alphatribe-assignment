@@ -1,20 +1,20 @@
-import express from 'express';
-import { configureExpress } from './frameworks/server/express/express';
+import 'express-async-errors';
 import { startServer } from './frameworks/server/startServer';
 import { env } from './config/env';
 import { createServer } from 'http';
 import { mongoDbConnection } from './frameworks/database/mongoDB/connection';
+import { ExpressApp } from './frameworks/server/express/application';
+import { SocketApplication } from './frameworks/server/socket/application';
+
+const expressApp = new ExpressApp();
 
 const bootstrap = async () => {
-  const app = express();
   await mongoDbConnection().connectToMongo();
-  configureExpress(app);
-  const server = createServer(app);
+  const server = createServer(expressApp.getInstance());
+  SocketApplication.getInstance();
+  SocketApplication.attach(server);
   startServer(server, parseInt(env.PORT));
-  return app;
 };
 bootstrap();
-export { bootstrap };
 
-//TODO: - Image parsing using multer for users
-//TODO: - Api documentation
+//TODO: - Image parsing for users (form data)

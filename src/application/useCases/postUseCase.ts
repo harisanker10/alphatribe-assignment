@@ -1,9 +1,14 @@
 import { ILikeRepository } from '../contracts/ILikeRepository';
 import { IPostRepository } from '../contracts/IPostRepository';
+import {
+  INotificationService,
+  NotificationEvents,
+} from '../contracts/services/INotificationService';
 
 export function PostUseCase(
   postRepository: IPostRepository,
   likeRepository: ILikeRepository,
+  notificationService: INotificationService,
 ) {
   return {
     getPost(postId: string) {
@@ -62,8 +67,17 @@ export function PostUseCase(
       return postRepository.deletePost(postId);
     },
 
-    likePost({ postId, userId }: { postId: string; userId: string }) {
-      return likeRepository.like({ postId, userId });
+    async likePost({ postId, userId }: { postId: string; userId: string }) {
+      await likeRepository.like({ postId, userId });
+      const { userId: ownerId } = await postRepository.getPost(postId);
+      await notificationService.sendUserNotification(
+        NotificationEvents.like,
+        ownerId,
+        {
+          likedBy: userId,
+          postId,
+        },
+      );
     },
 
     unlikePost({ postId, userId }: { postId: string; userId: string }) {

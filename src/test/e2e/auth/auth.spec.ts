@@ -1,27 +1,24 @@
 import request from 'supertest';
-import express, { Express } from 'express';
-import { configureExpress } from '@app/src/frameworks/server/express/express';
-import { errorHandler } from '@app/src/frameworks/server/express/middlewares/errorHandlerMiddleware';
 import { env } from '@app/src/config/env';
 import { Server } from 'http';
 import mongoose from 'mongoose';
+import { ExpressApp } from '@app/src/frameworks/server/express/application';
 
-const app = express();
+const app = new ExpressApp().getInstance();
 let server: Server;
 beforeAll(async () => {
   await mongoose.connect(env.MONGO_TEST_URI);
   await mongoose.connection.db?.dropDatabase();
-  configureExpress(app);
-  app.use(errorHandler);
   server = app.listen(env.PORT, () => console.log('listening at %d', env.PORT));
 });
 afterAll(async () => {
-  server.close();
+  await mongoose.connection.db?.dropDatabase();
   mongoose.disconnect();
+  server.close();
 });
 
-const registerUser = async (userData: Record<string, any>) => {
-  return await request(app).post('/api/auth/register').send(userData);
+const registerUser = (userData: Record<string, any>) => {
+  return request(app).post('/api/auth/register').send(userData);
 };
 
 describe('Authentication', () => {
@@ -42,11 +39,12 @@ describe('Authentication', () => {
     }
   });
   it('It creates a new user', async () => {
-    let result = await request(app).post('/api/auth/register').send({
+    let result = await registerUser({
       username: 'johndoe69',
       email: 'johndoe@gmail.com',
       password: 'Password@123',
     });
+
     expect(result.statusCode).toBe(201);
   });
   it('It should not create a duplicate user', async () => {

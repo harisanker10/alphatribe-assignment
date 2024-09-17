@@ -9,20 +9,16 @@ export function AuthUseCase(
   authService: IAuthService,
 ) {
   return {
-    async register({
-      email,
-      password,
-      username,
-    }: {
+    async register(data: {
       email: string;
       password: string;
       username: string;
     }) {
-      if (!isEmail(email)) {
+      if (!isEmail(data.email)) {
         throw new UseCaseError('Invalid email', 400);
       }
       if (
-        !isStrongPassword(password, {
+        !isStrongPassword(data.password, {
           minLength: 8,
           minNumbers: 1,
           minUppercase: 1,
@@ -36,7 +32,7 @@ export function AuthUseCase(
         );
       }
 
-      if (username.length < 3) {
+      if (data?.username?.length < 3) {
         throw new UseCaseError(
           'Username should contain atleast 3 characters',
           400,
@@ -44,28 +40,31 @@ export function AuthUseCase(
       }
 
       const existingUser = await userRepository.getUserOrQuery({
-        username,
-        email,
+        username: data?.username,
+        email: data?.email,
       });
       if (existingUser) {
         throw new UseCaseError('User already exist', 409);
       }
-      const hashedPassword = await authService.encryptPassword(password);
+      const hashedPassword = await authService.encryptPassword(data?.password);
       const { id } = await userRepository.createUser({
-        email,
-        username,
+        email: data?.email,
+        username: data?.username,
         password: hashedPassword,
       });
 
       return id;
     },
 
-    async login({ email, password }: { email: string; password: string }) {
-      const user = await userRepository.getUserByEmail(email);
+    async login(data: { email: string; password: string }) {
+      if (!data.email || !data.password) {
+        throw new UseCaseError('Invalid fields', 400);
+      }
+      const user = await userRepository.getUserByEmail(data.email);
       if (!user) {
         throw new UseCaseError('User not found', 404);
       }
-      const valid = await authService.compare(password, user.password);
+      const valid = await authService.compare(data.password, user.password);
       if (!valid) {
         throw new UseCaseError('Invalid Password', 403);
       }
